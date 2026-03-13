@@ -291,6 +291,55 @@ app.get("/welcome", (req, res) => {
   res.json({ message: "Welcome to the WiFi Billing System API!" });
 });
 
+// -------------------- HEALTH CHECK ENDPOINTS --------------------
+app.get("/health", async (req, res) => {
+  try {
+    // Check database connection
+    await prisma.$queryRaw`SELECT 1`;
+    
+    const health = {
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      version: process.env.npm_package_version || "1.0.0",
+      environment: process.env.NODE_ENV,
+      services: {
+        database: "connected",
+        mikrotik: process.env.MIKROTIK_ENABLED === "true" ? "enabled" : "disabled",
+        mpesa: process.env.MPESA_ENABLED === "true" ? "enabled" : "disabled"
+      }
+    };
+    
+    res.json(health);
+  } catch (error) {
+    logger.error("Health check failed", { error: error.message });
+    res.status(503).json({
+      status: "unhealthy",
+      timestamp: new Date().toISOString(),
+      error: error.message
+    });
+  }
+});
+
+// -------------------- READYNESS CHECK --------------------
+app.get("/ready", async (req, res) => {
+  try {
+    // Check if essential services are ready
+    await prisma.$queryRaw`SELECT 1`;
+    
+    res.json({
+      status: "ready",
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: "not ready",
+      timestamp: new Date().toISOString(),
+      error: error.message
+    });
+  }
+});
+
 // -------------------- ROOT ROUTE --------------------
 app.get("/", (req, res) => {
   res.json({ message: "WiFi Billing System API is running", status: "OK" });

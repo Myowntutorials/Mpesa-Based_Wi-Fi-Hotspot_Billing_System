@@ -1,0 +1,128 @@
+# Coolify Configuration for M-Pesa Wi-Fi Hotspot Billing System
+# This file defines the deployment configuration for Coolify
+
+version: "1.0"
+name: "mpesa-wifi-hotspot"
+description: "M-Pesa Wi-Fi Hotspot Billing System with MikroTik Integration"
+
+# Application Configuration
+application:
+  name: "mpesa-wifi-hotspot"
+  source:
+    type: "git"
+    repository: "https://github.com/your-username/Mpesa-Based_Wi-Fi-Hotspot_Billing_System.git"
+    branch: "main"
+  
+  # Build Configuration
+  build:
+    type: "docker"
+    dockerfile: "Dockerfile"
+    context: "."
+    
+  # Environment Variables
+  environment:
+    - NODE_ENV=production
+    - PORT=5000
+    - DATABASE_URL=postgresql://wifi_user:${DB_PASSWORD}@db:5432/wifi_billing
+    - JWT_SECRET=${JWT_SECRET}
+    - ADMIN_USERNAME=${ADMIN_USERNAME}
+    - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    - ADMIN_EMAIL=${ADMIN_EMAIL}
+    - MPESA_ENABLED=true
+    - MPESA_CONSUMER_KEY=${MPESA_CONSUMER_KEY}
+    - MPESA_CONSUMER_SECRET=${MPESA_CONSUMER_SECRET}
+    - MPESA_SHORTCODE=${MPESA_SHORTCODE}
+    - MPESA_PASSKEY=${MPESA_PASSKEY}
+    - MPESA_CALLBACK_URL=${COOLIFY_APP_URL}/api/mpesa/callback
+    - MIKROTIK_ENABLED=${MIKROTIK_ENABLED}
+    - MIKROTIK_HOST=${MIKROTIK_HOST}
+    - MIKROTIK_USER=${MIKROTIK_USER}
+    - MIKROTIK_PASSWORD=${MIKROTIK_PASSWORD}
+    - MIKROTIK_PORT=${MIKROTIK_PORT}
+    - LOAN_WIFI_DURATION_HOURS=${LOAN_WIFI_DURATION_HOURS}
+
+  # Health Check
+  health_check:
+    path: "/welcome"
+    interval: 30
+    timeout: 10
+    retries: 3
+    start_period: 40
+
+  # Port Configuration
+  port: 5000
+
+# Database Service
+database:
+  type: "postgresql"
+  version: "15"
+  name: "wifi_billing"
+  user: "wifi_user"
+  password: "${DB_PASSWORD}"
+
+# Volumes
+volumes:
+  - name: "postgres_data"
+    mount_path: "/var/lib/postgresql/data"
+  - name: "app_logs"
+    mount_path: "/app/logs"
+
+# Deployment Settings
+deployment:
+  replicas: 1
+  auto_deploy: true
+  restart_policy: "unless-stopped"
+
+# Domains
+domains:
+  - domain: "${COOLIFY_APP_URL}"
+    https: true
+    port: 443
+
+# Required Secrets
+secrets:
+  - name: "JWT_SECRET"
+    description: "Secure random string for JWT authentication"
+    required: true
+  - name: "ADMIN_USERNAME"
+    description: "Admin login username"
+    required: true
+  - name: "ADMIN_PASSWORD"
+    description: "Admin login password"
+    required: true
+  - name: "ADMIN_EMAIL"
+    description: "Admin email address"
+    required: true
+  - name: "DB_PASSWORD"
+    description: "Database password"
+    required: true
+  - name: "MPESA_CONSUMER_KEY"
+    description: "M-Pesa API consumer key"
+    required: true
+  - name: "MPESA_CONSUMER_SECRET"
+    description: "M-Pesa API consumer secret"
+    required: true
+  - name: "MPESA_SHORTCODE"
+    description: "M-Pesa shortcode"
+    required: true
+  - name: "MPESA_PASSKEY"
+    description: "M-Pesa passkey"
+    required: true
+  - name: "MIKROTIK_ENABLED"
+    description: "Enable MikroTik integration (true/false)"
+    default: "true"
+  - name: "MIKROTIK_HOST"
+    description: "MikroTik router IP address"
+    required: false
+  - name: "MIKROTIK_USER"
+    description: "MikroTik username"
+    required: false
+  - name: "MIKROTIK_PASSWORD"
+    description: "MikroTik password"
+    required: false
+  - name: "MIKROTIK_PORT"
+    description: "MikroTik API port"
+    default: "8728"
+  - name: "LOAN_WIFI_DURATION_HOURS"
+    description: "Loan WiFi duration in hours"
+    default: "1"
