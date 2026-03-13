@@ -7,10 +7,10 @@ const nextConfig = {
     ignoreBuildErrors: true, // Skip TypeScript errors
   },
   images: {
-    unoptimized: true, // Useful for static export
+    unoptimized: true, // Useful for deployment without image optimization
   },
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000',
   },
   webpack(config) {
     config.optimization.splitChunks = {
@@ -19,7 +19,8 @@ const nextConfig = {
     };
     return config;
   },
-  output: "export", // Static export for Cloudflare Pages
+  // Remove static export for server-side deployment
+  // output: "export", // Commented out for Coolify deployment
   // Optional: set metadataBase if you use Open Graph/Twitter cards
   // metadataBase: new URL("https://yourdomain.com"),
 };

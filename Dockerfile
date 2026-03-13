@@ -1,18 +1,24 @@
 # ---------------------------------------
 # 1. Build Next.js frontend
 # ---------------------------------------
-FROM node:18-alpine AS frontend
+FROM node:20-alpine AS frontend
 WORKDIR /app/frontend
+# Prevent Next.js from installing TypeScript dependencies automatically
+ENV NEXT_TELEMETRY_DISABLED 1
 COPY frontend/package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 COPY frontend .
 RUN npm run build
 
 # ---------------------------------------
 # 2. Setup backend with frontend build
 # ---------------------------------------
-FROM node:18-alpine AS backend
+FROM node:20-alpine AS backend
 WORKDIR /app
+
+# Environment variables
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED 1
 
 # Install system dependencies
 RUN apk add --no-cache \

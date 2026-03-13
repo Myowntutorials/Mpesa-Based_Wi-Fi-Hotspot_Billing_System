@@ -9,6 +9,8 @@ Before deploying to Coolify, ensure you have:
 - [ ] M-Pesa API credentials from Safaricom
 - [ ] MikroTik router details (IP, username, password)
 - [ ] Custom domain (optional but recommended)
+- [ ] ✅ **Fixed**: Node.js 20+ compatibility issues resolved
+- [ ] ✅ **Fixed**: Next.js build configuration updated
 
 ## ⚡ One-Click Deployment Steps
 
@@ -24,7 +26,8 @@ The following files are pre-configured for Coolify:
 - ✅ `coolify.yaml` - Main configuration
 - ✅ `docker-compose.coolify.yml` - Docker setup
 - ✅ `.env.production` - Environment template
-- ✅ `Dockerfile` - Optimized for production
+- ✅ `Dockerfile` - Optimized for production (Node.js 20)
+- ✅ `COOLIFY_TROUBLESHOOTING.md` - Troubleshooting guide
 
 ### 3. Coolify Dashboard Setup
 
@@ -108,25 +111,31 @@ The following files are pre-configured for Coolify:
 
 ## 🛠️ Troubleshooting Quick Fixes
 
-### Build Issues
-- Check Dockerfile syntax
-- Verify all dependencies in package.json
-- Review build logs
+### Common Issues & Solutions
 
-### Database Issues
-- Verify DATABASE_URL format
-- Check database service status
-- Confirm credentials
+1. **Build Fails with pnpm Error**
+   - ✅ **Fixed**: Updated to Node.js 20 and disabled auto-installation
+   - If persists: Check `COOLIFY_TROUBLESHOOTING.md`
 
-### M-Pesa Issues
-- Update callback URL in Safaricom portal
-- Check firewall allows incoming callbacks
-- Verify API credentials
+2. **Database Connection Issues**
+   - Verify DATABASE_URL format
+   - Check database service is running
+   - Confirm credentials
 
-### MikroTik Issues
-- Ensure API service enabled: `/ip service enable api`
-- Check port 8728 is accessible
-- Verify credentials
+3. **M-Pesa Issues**
+   - Update callback URL in Safaricom portal
+   - Check firewall allows incoming callbacks
+   - Verify API credentials
+
+4. **MikroTik Issues**
+   - Ensure API service enabled: `/ip service enable api`
+   - Check port 8728 is accessible
+   - Verify credentials
+
+### Get Help
+- 📖 **Full Troubleshooting Guide**: `COOLIFY_TROUBLESHOOTING.md`
+- 📚 **Coolify Docs**: https://coolify.io/docs
+- 🐛 **Report Issues**: Create GitHub issue
 
 ## 📚 Important Files
 
@@ -135,8 +144,9 @@ The following files are pre-configured for Coolify:
 | `coolify.yaml` | Main Coolify configuration |
 | `docker-compose.coolify.yml` | Docker setup for Coolify |
 | `.env.production` | Environment variables template |
-| `Dockerfile` | Optimized for production |
+| `Dockerfile` | Optimized for production (Node.js 20) |
 | `DEPLOYMENT_COOLIFY.md` | Detailed deployment guide |
+| `COOLIFY_TROUBLESHOOTING.md` | Troubleshooting guide |
 
 ## 🎯 Next Steps
 
@@ -156,3 +166,9 @@ The following files are pre-configured for Coolify:
 ---
 
 **🎉 Your M-Pesa Wi-Fi Hotspot Billing System is ready for Coolify deployment!**
+
+**Recent Fixes Applied:**
+- ✅ Node.js 20 compatibility
+- ✅ Next.js build configuration
+- ✅ TypeScript dependency handling
+- ✅ Environment variable optimization
